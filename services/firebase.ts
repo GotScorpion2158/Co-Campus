@@ -1,4 +1,5 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
+import { getStorage, FirebaseStorage } from 'firebase/storage';
 import { initializeAuth, getAuth, getReactNativePersistence, signInAnonymously, Auth, User } from 'firebase/auth';
 import { getFirestore, Firestore } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -52,7 +53,15 @@ try {
     db = null;
 }
 
-export { auth, db };
+let storage: FirebaseStorage | null = null;
+
+try {
+  storage = getStorage(app);
+} catch (err) {
+  console.warn('Firebase Storage could not be initialized:', err);
+}
+
+export { auth, db, storage };
 
 export async function ensureAnonymousAuth(): Promise<User | null> {
     try {

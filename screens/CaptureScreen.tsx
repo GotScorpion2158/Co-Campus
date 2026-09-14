@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { uploadStudyImages } from '../services/fileStorage';
 import {
     StyleSheet,
     Text,
@@ -205,12 +206,18 @@ export const CaptureScreen: React.FC<CaptureScreenProps> = ({
 
             // Stage 4: Save
             setStage('saving');
-            const imageUris = images.map((img) => img.uri);
+            const localImageUris = images.map((img) => img.uri);
+            const storageNoteId = appendNote?.id || `note_${Date.now()}`;
+
+            const imageUris = await uploadStudyImages(
+             localImageUris,
+             storageNoteId
+            );
             const savedNote = await saveNoteToFirestore(
                 extraction,
                 combinedFlashcards,
                 combinedVideos,
-                appendNote?.id,
+                appendNote?.id || storageNoteId,
                 imageUris,
                 selectedFolder?.id
             );
