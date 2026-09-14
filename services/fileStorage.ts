@@ -7,6 +7,9 @@ export async function uploadStudyImages(
 ): Promise<string[]> {
   if (!storage || localUris.length === 0) return localUris;
 
+  // Store reference to satisfy TypeScript null check in async closure
+  const firebaseStorage = storage;
+
   const user = await ensureAnonymousAuth();
   if (!user) return localUris;
 
@@ -17,7 +20,7 @@ export async function uploadStudyImages(
         const blob = await response.blob();
 
         const fileRef = ref(
-          storage,
+          firebaseStorage,
           `users/${user.uid}/notes/${noteId}/${index + 1}.jpg`
         );
 
